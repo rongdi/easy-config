@@ -1,12 +1,12 @@
 package com.rdpaas.easyconfig.sample;
 
+import com.rdpaas.easyconfig.ann.EnableEasyConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan("com.rdpaas")
+@EnableEasyConfig
 public class RunApplication {
 
     public static void main(String[] args) {

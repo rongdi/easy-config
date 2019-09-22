@@ -13,6 +13,11 @@ public class TestController implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
 
+    /**
+     * 测试直接获取spring容器中指定的beanName，修改前后分别调用，在浏览器看看对象的属性变化
+     * @param beanName
+     * @return
+     */
     @RequestMapping("/getBean")
     @ResponseBody
     public Object getConfig(String beanName) {

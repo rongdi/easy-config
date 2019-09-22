@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Properties;
 
 /**
- * 使用环境的后置处理器，将自己的配置放在优先级最高的最前面，这里其实是仿照
+ * 使用环境的后置处理器，将自己的配置放在优先级最高的最前面，这里其实是仿照springboot中
  * SpringApplication构造方法 ->setInitializers()->getSpringFactoriesInstances()->loadFactoryNames()->
  * loadSpringFactories(@Nullable ClassLoader classLoader)断点到里面可以发现这里会加载各个jar包
  * FACTORIES_RESOURCE_LOCATION = "META-INF/spring.factories"文件，所以这里把这个类配置本模块的同样
@@ -61,7 +61,9 @@ public class InitSettingsEnvironmentPostProcessor implements EnvironmentPostProc
             boolean isWeb = PropUtil.isWebProp(filePath);
 
             /**
-             * 根据资源类型，网络或者本地文件系统初始化好配置信息
+             * 根据资源类型，网络或者本地文件系统初始化好配置信息，其实springcloud中配置服务就是可以
+             * 直接通过一个url获取到属性，这个url地址也可以放在这里，spring就是好东西，UrlResource这种工具
+             * 也有提供，也免了自己写的麻烦了
              */
             Properties config = new Properties();
             Resource configRes = null;
@@ -91,8 +93,6 @@ public class InitSettingsEnvironmentPostProcessor implements EnvironmentPostProc
         } catch (Exception e) {
             logger.info("load easyconfig bootstrap.properties error",e);
         }
-//        Properties properties = loadProperties(file);
-//        propertySources.addFirst(new PropertiesPropertySource("Config", properties));
     }
 
 

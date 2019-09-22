@@ -1,5 +1,7 @@
 package com.rdpaas.easyconfig.context;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
@@ -14,6 +16,9 @@ import java.util.Map;
  * @date 2019-09-21 10:10:01
  */
 public class SpringAnnotatedRefreshScopeBeanInvoker {
+
+    private Logger logger = LoggerFactory.getLogger(SpringAnnotatedRefreshScopeBeanInvoker.class);
+
 
     private final static String VALUE_REGEX = "\\$\\{(.*)}";
 
@@ -86,7 +91,7 @@ public class SpringAnnotatedRefreshScopeBeanInvoker {
                 try {
                     field.set(bean, props.get(key));
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    logger.info("set field error",e);
                 }
             }
         }

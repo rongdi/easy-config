@@ -17,7 +17,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
-import org.springframework.stereotype.Component;
 import sun.misc.ProxyGenerator;
 
 import java.io.File;
@@ -37,7 +36,6 @@ import java.util.Map;
  * @author rongdi
  * @date 2019-09-21 10:30:01
  */
-@Component
 public class SpringBootContext implements ApplicationContextAware {
 
     private Logger logger = LoggerFactory.getLogger(SpringBootContext.class);
@@ -75,7 +73,7 @@ public class SpringBootContext implements ApplicationContextAware {
             /**
              * 如果有配置文件中配置了文件路径,并且是本地文件，则开启对应位置的文件监听
              */
-            if(filePath != null && PropUtil.isWebProp(filePath)) {
+            if(filePath != null && !PropUtil.isWebProp(filePath)) {
                 File file = new File(filePath);
                 String dir = filePath;
                 /**
@@ -147,7 +145,7 @@ public class SpringBootContext implements ApplicationContextAware {
                     Method[] methods = clazz.getDeclaredMethods();
                     /**
                      * 循环从class对象中拿到的所有方法对象，找到当前方法并且被@RefreshScope修饰的方法构造invoker对象
-                     * 放入执行器map中
+                     * 放入执行器map中，为后续处理@ConfigurationProperties做准备
                      */
                     for(Method m : methods) {
                         if(factoryMethodMeta.getMethodName().equals(m.getName()) && m.isAnnotationPresent(RefreshScope.class)) {
@@ -200,8 +198,8 @@ public class SpringBootContext implements ApplicationContextAware {
                 /**
                  * 使用执行器将属性刷新到@Bean修饰的方法产生的对象中,这里暂时不需要处理，仅仅@Value注解不需要处理@Bean
                  * 修饰的方法
+                 * TODO
                  */
-//                invoker.refreshPropsIntoBean(refreshScopeBeanInvokorMap, props);
             } else {
                 /**
                  * 使用执行器将属性刷新到对象中
