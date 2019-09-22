@@ -8,7 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -17,16 +16,11 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
-import sun.misc.ProxyGenerator;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
-import java.io.IOException;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -36,6 +30,7 @@ import java.util.Map;
  * @author rongdi
  * @date 2019-09-21 10:30:01
  */
+@Component
 public class SpringBootContext implements ApplicationContextAware {
 
     private Logger logger = LoggerFactory.getLogger(SpringBootContext.class);
@@ -208,74 +203,6 @@ public class SpringBootContext implements ApplicationContextAware {
             }
         }
 
-    }
-
-    private void updateValue(Map<String,Object> props) {
-
-
-        Map<String,Object> classMap = applicationContext.getBeansWithAnnotation(RefreshScope.class);
-        if(classMap == null || classMap.isEmpty()) {
-            return;
-        }
-
-        classMap.forEach((beanName,bean) -> {
-            /**
-             * 这是一个坑爹的东西，这里保存一下spring生成的代理类的字节码由于有些@Value可能在@Configuration修饰的配置类下，
-             * 被这个注解修饰的配置类里面的属性在代理类会消失，只留下对应的getXX和setXX方法，导致下面不能直接通过反射直接
-             * 修改属性的值，只能通过反射调用对应setXX方法修改属性的值
-             */
-            saveProxyClass(bean);
-
-            Class<?> clazz = bean.getClass();
-
-            /**
-             * 获取所有可用的属性
-             */
-            Field[] fields = clazz.getDeclaredFields();
-            /**
-             * 使用反射直接根据属性修改属性值
-             */
-            setValue(bean,fields,props);
-
-
-
-        });
-    }
-
-    private void setValue(Object bean,Field[] fields,Map<String,Object> props) {
-        for(Field field : fields) {
-            Value valueAnn = field.getAnnotation(Value.class);
-            if (valueAnn == null) {
-                continue;
-            }
-            String key = valueAnn.value();
-            if (key == null) {
-                continue;
-            }
-            key = key.replaceAll(VALUE_REGEX,"$1");
-            key = key.split(COLON)[0];
-            if (props.containsKey(key)) {
-                field.setAccessible(true);
-                try {
-                    field.set(bean, props.get(key));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    /**
-     * 只为测试导出代理对象然后反编译
-     * @param bean
-     */
-    private void saveProxyClass(Object bean) {
-        byte[] bytes = ProxyGenerator.generateProxyClass("T", new Class[]{bean.getClass()});
-        try {
-            Files.write(Paths.get("F:\\fail2\\","T.class"),bytes, StandardOpenOption.CREATE);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void setFilePath(String filePath) {

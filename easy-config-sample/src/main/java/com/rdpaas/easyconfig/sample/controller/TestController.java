@@ -15,6 +15,10 @@ public class TestController implements ApplicationContextAware {
 
     /**
      * 测试直接获取spring容器中指定的beanName，修改前后分别调用，在浏览器看看对象的属性变化
+     * 比如
+     * getBean?beanName=cat
+     * getBean?beanName=props
+     * getBean?beanName=person
      * @param beanName
      * @return
      */
