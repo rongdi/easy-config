@@ -21,7 +21,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(EasyConfigSelector.class)
-//@ComponentScan("com.rdpaas")
-//@Import({SpringBootContext.class})
 public @interface EnableEasyConfig {
 }

@@ -13,7 +13,6 @@ import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.core.env.Environment;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
 import org.springframework.stereotype.Component;
@@ -35,26 +34,15 @@ public class SpringBootContext implements ApplicationContextAware {
 
     private Logger logger = LoggerFactory.getLogger(SpringBootContext.class);
 
-
     private final static String REFRESH_SCOPE_ANNOTATION_NAME = "com.rdpaas.easyconfig.ann.RefreshScope";
 
     private final static Map<Class<?>, SpringAnnotatedRefreshScopeBeanInvoker> refreshScopeBeanInvokorMap = new HashMap<>();
-
-    private final static String COLON = ":";
-
-    private final static String SET_PREFIX = "set";
 
     private final static String VALUE_REGEX = "\\$\\{(.*)}";
 
     private static ApplicationContext applicationContext;
 
-    private static Environment environment;
-
     private static String filePath;
-
-    public static ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
 
     @Override
     public void setApplicationContext(ApplicationContext ac) throws BeansException {
@@ -195,6 +183,7 @@ public class SpringBootContext implements ApplicationContextAware {
                  * 修饰的方法
                  * TODO
                  */
+                invoker.refreshPropsIntoBean(props);
             } else {
                 /**
                  * 使用执行器将属性刷新到对象中

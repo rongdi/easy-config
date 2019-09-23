@@ -2,22 +2,16 @@ package com.rdpaas.easyconfig.sample.bean;
 
 
 import com.rdpaas.easyconfig.ann.RefreshScope;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration("props")
+@Configuration("props1")
+@ConfigurationProperties(prefix = "test")
 @RefreshScope
-public class TestProperties {
+public class TestProperties1 {
 
-    @Value("${test.name:test}")
     private String name;
-
-    @RefreshScope
-    @Bean
-    public Cat cat(Person person) {
-        return new Cat(person);
-    }
 
     public String getName() {
         return name;
@@ -25,6 +19,18 @@ public class TestProperties {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Bean
+    @RefreshScope
+    @ConfigurationProperties(prefix = "food")
+    public Food food() {
+        return new Food();
+    }
+
+    @Bean
+    public Dog dog() {
+        return new Dog(food());
     }
 
     @Override

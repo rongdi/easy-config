@@ -7,5 +7,6 @@ package com.rdpaas.easyconfig.observer;
  */
 public enum ObserverType {
     LOCAL_FILE,
+    WEB_FILE,
     DATEBASE;
 }
