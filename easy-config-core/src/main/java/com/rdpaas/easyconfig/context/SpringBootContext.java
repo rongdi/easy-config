@@ -179,9 +179,7 @@ public class SpringBootContext implements ApplicationContextAware {
              */
             if(isMethod) {
                 /**
-                 * 使用执行器将属性刷新到@Bean修饰的方法产生的对象中,这里暂时不需要处理，仅仅@Value注解不需要处理@Bean
-                 * 修饰的方法
-                 * TODO
+                 * 使用执行器将属性刷新到@Bean修饰的方法产生的对象中,使其支持@ConfigurationProperties注解
                  */
                 invoker.refreshPropsIntoBean(props);
             } else {
