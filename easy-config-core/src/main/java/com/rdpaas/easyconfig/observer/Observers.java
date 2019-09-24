@@ -29,6 +29,9 @@ public class Observers {
         if(type == ObserverType.LOCAL_FILE) {
             currentObserver = new LocalFileObserver();
             currentObserver.startWatch(executorService,context,target);
+        } else if(type == ObserverType.WEB_FILE) {
+            currentObserver = new WebFileObserver();
+            currentObserver.startWatch(executorService,context,target);
         }
     }
 
@@ -38,10 +41,6 @@ public class Observers {
      * @throws IOException
      */
     public static void stopWatch(ObserverType type) throws IOException {
-        if(type == ObserverType.LOCAL_FILE) {
-            if(currentObserver != null) {
-                currentObserver.stopWatch();
-            }
-        }
+          currentObserver.stopWatch();
     }
 }

@@ -1,6 +1,7 @@
 package com.rdpaas.easyconfig.utils;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
 
@@ -23,4 +24,18 @@ public class PropUtil {
         return props;
     }
 
+    public static boolean isSame(Properties p1,Properties p2) {
+        if(p1.isEmpty() && p2.isEmpty()) {
+            return true;
+        }
+        for(Iterator<Map.Entry<Object,Object>> iter = p1.entrySet().iterator(); iter.hasNext();) {
+            Map.Entry<Object,Object> entry = iter.next();
+            Object key = entry.getKey();
+            Object value = entry.getValue();
+            if(!value.equals(p2.get(key))) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

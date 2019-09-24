@@ -1,5 +1,6 @@
 package com.rdpaas.easyconfig.boot;
 
+import com.rdpaas.easyconfig.context.EnvironmentContext;
 import com.rdpaas.easyconfig.context.SpringBootContext;
 import com.rdpaas.easyconfig.utils.PropUtil;
 import org.slf4j.Logger;
@@ -34,8 +35,6 @@ public class InitSettingsEnvironmentPostProcessor implements EnvironmentPostProc
 
     private final static String FILE_KEY = "easyconfig.config.file";
 
-    private final static String FILE_PATH_KEY = "easyconfig.config.path";
-
     @Override
     public void postProcessEnvironment(ConfigurableEnvironment configurableEnvironment, SpringApplication application) {
         /**
@@ -54,6 +53,8 @@ public class InitSettingsEnvironmentPostProcessor implements EnvironmentPostProc
              * 找到配置文件中的FILE_KEY配置，这个配置表示你想把配置文件放在哪个目录下
              */
             String filePath = prop.getProperty(FILE_KEY);
+
+            EnvironmentContext.easyConfigProperties = prop;
 
             /**
              * 判断文件资源是网络或者本地文件系统，比如从配置中心获取的就是网络的配置信息
@@ -78,6 +79,10 @@ public class InitSettingsEnvironmentPostProcessor implements EnvironmentPostProc
                  */
                 PropertiesLoaderUtils.fillProperties(config, configRes);
 
+                /**
+                 * 将当前配置更新到环境中
+                 */
+                EnvironmentContext.currProperties = config;
                 /**
                  * 将自己配置的资源加入到资源列表的最前面，使其具有最高优先级
                  */

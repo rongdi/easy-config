@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -67,7 +68,7 @@ public class SpringAnnotatedRefreshScopeBeanInvoker {
          */
         ConfigurationProperties cp = clazz.getAnnotation(ConfigurationProperties.class);
         String prefix = "";
-        if(cp != null && cp.prefix() != null && !"".equals(cp.prefix().trim())) {
+        if(cp != null && !StringUtils.isEmpty(cp.prefix())) {
             prefix = cp.prefix() + ".";
         }
 

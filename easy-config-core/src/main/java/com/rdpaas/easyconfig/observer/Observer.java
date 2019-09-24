@@ -12,13 +12,20 @@ import java.util.concurrent.ExecutorService;
  */
 public abstract class Observer {
 
+    public static String EASYCONFIG_CONFIG_PERIOD = "easyconfig.config.period";
+
     protected volatile boolean isRun = false;
 
-    public abstract void startWatch(ExecutorService executorService, SpringBootContext context, String target) throws IOException;
+    public void startWatch(ExecutorService executorService, SpringBootContext context, String target) throws IOException {
+        isRun = true;
+        onStarted(executorService, context, target);
+    }
 
     public void stopWatch() throws IOException {
         isRun = false;
     }
+
+    public abstract void onStarted(ExecutorService executorService, SpringBootContext context, String target) throws IOException;
 
     public abstract void onChanged(SpringBootContext context, Object... data);
 }

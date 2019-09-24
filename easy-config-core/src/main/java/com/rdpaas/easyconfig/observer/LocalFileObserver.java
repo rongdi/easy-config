@@ -1,6 +1,7 @@
 package com.rdpaas.easyconfig.observer;
 
 import com.rdpaas.easyconfig.context.SpringBootContext;
+import com.rdpaas.easyconfig.utils.PropUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
@@ -16,22 +17,21 @@ import java.nio.file.StandardWatchEventKinds;
 import java.nio.file.WatchEvent;
 import java.nio.file.WatchKey;
 import java.nio.file.WatchService;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ExecutorService;
 
 /**
  * 本地文件目录监听器
+ * @author rongdi
+ * @date 2019-09-24 19:30:05
  */
 public class LocalFileObserver extends Observer {
 
     private Logger logger = LoggerFactory.getLogger(LocalFileObserver.class);
 
     @Override
-    public void startWatch(ExecutorService executorService, SpringBootContext context, String filePath) throws IOException {
-        isRun = true;
+    public void onStarted(ExecutorService executorService, SpringBootContext context, String filePath) throws IOException {
         /**
          * 设置需要监听的文件目录（只能监听目录）
          */
@@ -80,14 +80,10 @@ public class LocalFileObserver extends Observer {
              * 使用spring工具类加载资源，spring真是个好东西，你能想到的基本都有了
              */
             Properties prop = PropertiesLoaderUtils.loadProperties(resource);
-            Map<String,Object> props = new HashMap<>();
-            prop.forEach((key,value) -> {
-                props.put(String.valueOf(key),value);
-            });
             /**
              * 调用SpringBootContext刷新配置
              */
-            context.refreshConfig(props);
+            context.refreshConfig(PropUtil.prop2Map(prop));
         } catch(InvocationTargetException | IllegalAccessException e1){
             logger.error("refresh config error",e1);
         }catch (Exception e) {

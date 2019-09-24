@@ -15,7 +15,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.type.AnnotationMetadata;
 import org.springframework.core.type.MethodMetadata;
-import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -29,7 +29,6 @@ import java.util.Map;
  * @author rongdi
  * @date 2019-09-21 10:30:01
  */
-@Component
 public class SpringBootContext implements ApplicationContextAware {
 
     private Logger logger = LoggerFactory.getLogger(SpringBootContext.class);
@@ -53,10 +52,16 @@ public class SpringBootContext implements ApplicationContextAware {
              */
             init();
 
+            if(StringUtils.isEmpty(filePath)) {
+                return;
+            }
             /**
-             * 如果有配置文件中配置了文件路径,并且是本地文件，则开启对应位置的文件监听
+             * 如果是本地文件，则开启对应位置的文件监听
+             * 如果是网络文件，则开启对应路径的网络监听
              */
-            if(filePath != null && !PropUtil.isWebProp(filePath)) {
+            if(PropUtil.isWebProp(filePath)) {
+                Observers.startWatch(ObserverType.WEB_FILE, this, filePath);
+            } else {
                 File file = new File(filePath);
                 String dir = filePath;
                 /**
@@ -68,7 +73,6 @@ public class SpringBootContext implements ApplicationContextAware {
                 /**
                  * 开启监听
                  */
-
                 Observers.startWatch(ObserverType.LOCAL_FILE, this, dir);
             }
         }  catch (Exception e) {
